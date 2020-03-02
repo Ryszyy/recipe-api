@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Ryszyy/recipe-api/issues"
   },
-  "homepage": "https://github.com/Ryszyy/recipe-api#readme"
+  "homepage": "https://github.com/Ryszyy/recipe-api#readme",
+  "dependencies": {
+    "intercooler": "^1.2.3"
+  }
 }

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
     PermissionsMixin
+from django.db.models import UniqueConstraint
 
 from app import settings
 
@@ -35,6 +36,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = "email"
 
+    def __str__(self):
+        return self.email
+
+    def __repr__(self):
+        return self.email
+
 
 class Tag(models.Model):
     """Tag to be used for a recipe"""
@@ -43,6 +50,12 @@ class Tag(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=['name', 'user'],
+                             name="unique_tag")
+        ]
 
     def __str__(self):
         return self.name

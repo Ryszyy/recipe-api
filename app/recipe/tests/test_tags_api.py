@@ -69,3 +69,54 @@ class PrivateTagTests(TestCase):
         self.assertEqual(len(res.data), 2)
         #   test if response data is the same as data from the database call
         self.assertEqual(res.data[0]["name"], test_tag.name)
+
+    def test_create_tag_successful(self):
+        """Test successful tag creation"""
+        payload = {"name": "vege", "user": self.user}
+        res = self.client.post(TAGS_URL, payload)
+        tag_exist = Tag.objects.filter(
+            name=payload["name"],
+            user=self.user
+        ).exists()
+
+        self.assertTrue(tag_exist)
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_create_tag_with_blank_string(self):
+        """Test that Tag is not created with blank name"""
+        payload = {"name": "", "user": self.user}
+        res = self.client.post(TAGS_URL, payload)
+        tag_exist = Tag.objects.filter(
+            name=payload["name"],
+            user=self.user
+        ).exists()
+
+        self.assertFalse(tag_exist)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_tag_that_already_exist_for_a_user(self):
+        """Test that user cannot create two exact tag names"""
+        payload = {"name": "vege", "user": self.user}
+        self.client.post(TAGS_URL, payload)
+        res = self.client.post(TAGS_URL, payload)
+        tag_filtered = Tag.objects.filter(
+            name=payload["name"],
+            user=self.user
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(len(tag_filtered), 1)
+
+    def test_create_same_tags_for_diff_users(self):
+        """Test that users can have the same tag"""
+        other_user = create_user(
+            email="other@ryszyydev.com",
+            password="pass543"
+        )
+
+        self.client.post(TAGS_URL, {"name": "vege"})
+
+        self.client.force_authenticate(user=other_user)
+        res = self.client.post(TAGS_URL, {"name": "vege"})
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)

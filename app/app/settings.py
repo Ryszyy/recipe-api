@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'core',
-    'user'
+    'user',
+    'recipe'
 ]
 
 MIDDLEWARE = [
@@ -130,3 +131,15 @@ STATIC_URL = '/static/'
 # Additional settings
 
 AUTH_USER_MODEL = "core.User"
+
+# import sentry_sdk
+# from sentry_sdk.integrations.django import DjangoIntegration
+#
+# sentry_sdk.init(
+#     dsn="https://b1ab385f295f4e3d8007e8c762a961a5@sentry.io/3545384",
+#     integrations=[DjangoIntegration()],
+#
+#     # If you wish to associate users to errors (assuming you are using
+#     # django.contrib.auth) you may enable sending PII data.
+#     send_default_pii=True
+# )

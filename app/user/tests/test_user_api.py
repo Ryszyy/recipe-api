@@ -1,17 +1,14 @@
 from django.test import TestCase
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from rest_framework.test import APIClient
 from rest_framework import status
 
+from core.helpers import get_user, create_user, filter_user
+
 CREATE_USER_URL = reverse("user:create")
 TOKEN_URL = reverse("user:token")
 ME_URL = reverse("user:me")
-
-
-def create_user(**params):
-    return get_user_model().objects.create_user(**params)
 
 
 class PublicUserApiTests(TestCase):
@@ -29,7 +26,7 @@ class PublicUserApiTests(TestCase):
         }
         res = self.client.post(CREATE_USER_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        user = get_user_model().objects.get(**res.data)
+        user = get_user(**res.data)
         self.assertTrue(user.check_password(payload["password"]))
         self.assertNotIn("password", res.data)
 
@@ -37,7 +34,8 @@ class PublicUserApiTests(TestCase):
         """Test creating user that already exist"""
         payload = {
             "email": "test@ryszyydev.com",
-            "password": "test123"
+            "password": "test123",
+            "name": "some name"
         }
         create_user(**payload)
 
@@ -48,15 +46,14 @@ class PublicUserApiTests(TestCase):
     def test_password_too_short(self):
         """Test that the password must be more then 5 characters"""
         payload = {
+            "name": "Test",
             "email": "test@ryszyydev.com",
-            "password": "test"
+            "password": "teos"
         }
         res = self.client.post(CREATE_USER_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
-        user_exist = get_user_model().objects.filter(
-            email=payload["email"]
-        ).exists()
+        user_exist = filter_user(email=payload["email"]).exists()
 
         self.assertFalse(user_exist)
 

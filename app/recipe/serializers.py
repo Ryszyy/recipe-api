@@ -10,6 +10,6 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ("id", "name")
         read_only_fields = ("id",)
 
-    # def create(self, validated_data):
-    #     """Create and return tag object"""
-    #     return models.Tag.objects.create(**validated_data)
+    def create(self, validated_data):
+        """Create and return tag object"""
+        return models.Tag.objects.create(**validated_data)

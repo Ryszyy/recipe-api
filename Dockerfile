@@ -18,6 +18,5 @@ COPY ./app /app
 
 RUN adduser -D user
 USER user
-
 #RUN adduser -D postgres
 #USER postgres

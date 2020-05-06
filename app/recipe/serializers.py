@@ -11,14 +11,16 @@ class BaseRecipeAttrSerializer(serializers.ModelSerializer):
             default=serializers.CurrentUserDefault()
     )
 
+    class Meta:
+        fields = ("id", "name", "user")
+        read_only_fields = ("id", )
+
 
 class TagSerializer(BaseRecipeAttrSerializer):
     """Serializer for a Tag model"""
 
-    class Meta:
+    class Meta(BaseRecipeAttrSerializer.Meta):
         model = models.Tag
-        fields = ("id", "name", "user")
-        read_only_fields = ("id", )
 
         validators = [
             UniqueTogetherValidator(
@@ -31,10 +33,8 @@ class TagSerializer(BaseRecipeAttrSerializer):
 class IngredientSerializer(BaseRecipeAttrSerializer):
     """Serializer for an ingredient object"""
 
-    class Meta:
+    class Meta(BaseRecipeAttrSerializer.Meta):
         model = models.Ingredient
-        fields = ("id", "name", "user")
-        read_only_fields = ("id", )
 
         validators = [
             UniqueTogetherValidator(

@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
     PermissionsMixin
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 from app import settings
 
 
@@ -62,3 +62,19 @@ class Tag(AbstractBaseItem):
 
 class Ingredient(AbstractBaseItem):
     """Ingredient to be used in a recipe"""
+
+
+class Recipe(AbstractBaseItem):
+    """Recipes model"""
+
+    name = None
+    title = models.CharField(max_length=255)
+    time_minutes = models.IntegerField(validators=[MinValueValidator(1),
+                                       MaxValueValidator(520000)])
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+    link = models.CharField(max_length=255, blank=True)
+    tags = models.ManyToManyField("Tag")
+    ingredients = models.ManyToManyField("Ingredient")
+
+    def __str__(self):
+        return self.title

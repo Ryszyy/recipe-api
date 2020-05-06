@@ -2,7 +2,12 @@ from django.contrib.auth import get_user_model
 
 
 def create_user(**params):
-    return get_user_model().objects.create_user(**params)
+    defaults = {
+        "email": "test@ryszyydev.com",
+        "password": "123456"
+    }
+    defaults.update(params)
+    return get_user_model().objects.create_user(**defaults)
 
 
 def create_superuser(**params):
